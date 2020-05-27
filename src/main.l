@@ -10,19 +10,19 @@ void yyerror(char *);
 
 %%
 
-\{ {
+[\{] {
 	return START_JSON;
 }
 
-\} {
+[\}] {
 	return STOP_JSON;
 }
 
-: {
+[:] {
 	return TWO_DOTS;
 }
 
-, {
+[,] {
 	return COMMA;
 }
 
@@ -30,16 +30,23 @@ void yyerror(char *);
 	return START_LIST;
 }
 
-\] {
+[\]] {
 	return END_LIST;
 }
 
+[0-9]+[.][0-9]+ {
+	return NUM_FLOAT;
+}
 [0-9]+ {
 	return NUM;
 }
-\"[A-Za-z0-9]+\" {
+\"[A-Za-z0-9\.\,\-\:\;\ ]+\" {
 	return TEXT;
 }
+
+[[:space]] ;
+[\n]+ ;
+. ;
  
 %%
 

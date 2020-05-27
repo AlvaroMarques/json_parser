@@ -50,9 +50,10 @@ extern int yydebug;
     TWO_DOTS = 260,
     TEXT = 261,
     NUM = 262,
-    COMMA = 263,
-    START_LIST = 264,
-    END_LIST = 265
+    NUM_FLOAT = 263,
+    COMMA = 264,
+    START_LIST = 265,
+    END_LIST = 266
   };
 #endif
 /* Tokens.  */
@@ -61,9 +62,10 @@ extern int yydebug;
 #define TWO_DOTS 260
 #define TEXT 261
 #define NUM 262
-#define COMMA 263
-#define START_LIST 264
-#define END_LIST 265
+#define NUM_FLOAT 263
+#define COMMA 264
+#define START_LIST 265
+#define END_LIST 266
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

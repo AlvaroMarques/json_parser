@@ -20,31 +20,24 @@ int yylex(void);
 S: S FINAL_JSON {printf("VALIDO\n");}
 	|;
 
-FINAL_JSON: START_JSON JSON STOP_JSON {}
+FINAL_JSON: START_JSON JSON STOP_JSON {printf("aqui\n");}
 	|;
 
 JSON: JSON COMMA JSON {}
 	| TEXT TWO_DOTS FINAL_JSON {}
-	| TEXT TWO_DOTS FINAL_LIST  {}
-	| TEXT TWO_DOTS EXP {};
+	| TEXT TWO_DOTS EXP {printf("oi\n");};
 
-FINAL_LIST: START_LIST LIST END_LIST {}
-	| START_LIST END_LIST {};
-
-LIST: EXP COMMA EXP {} 
-	| LIST COMMA LIST
-	| EXP COMMA FINAL_LIST {} 
-	| FINAL_LIST COMMA FINAL_LIST {} 
-	| FINAL_LIST {printf("lista de lista\n");} 
-	| EXP
-
-EXP: TEXT {}    
-	| NUM {}
-	| NUM_FLOAT {};
+EXP: TEXT {printf("exp\n");}    
+	| NUM {printf("exp\n");}
+	| NUM_FLOAT {printf("exp\n");};
 
 
 %%
 /*
+	| TEXT TWO_DOTS LIST  {}
+LIST: START_LIST EXP COMMA LIST END_LIST{printf("hello\n");} 
+	| START_LIST EXP END_LIST
+	| START_LIST END_LIST;
 */
 void yyerror(char *s) {
 	printf("INVALIDO\n");
