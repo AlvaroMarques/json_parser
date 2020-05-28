@@ -2,7 +2,7 @@
 
 %{
 #include <stdio.h>
-  #include <stdlib.h>
+#include <stdlib.h>
 void yyerror(char *c);
 int yylex(void);
 %}
@@ -15,6 +15,7 @@ int yylex(void);
 %token COMMA
 %token START_LIST
 %token END_LIST
+%token EMPTY_LIST
 %%
 
 S: S FINAL_JSON {printf("VALIDO\n");}
@@ -25,20 +26,16 @@ FINAL_JSON: START_JSON JSON STOP_JSON {}
 
 JSON: JSON COMMA JSON {}
 	| TEXT TWO_DOTS FINAL_JSON {}
-	| TEXT TWO_DOTS P {}
+	| TEXT TWO_DOTS FINAL_LIST {}
 	| TEXT TWO_DOTS EXP {};
 
-P: P FINAL_LIST {}
-	|;
-
-O: LIST O
-	|;
 
 LIST: FINAL_LIST {} 
 	| EXP {} 
-	| LIST COMMA {};
+	| LIST COMMA LIST {}
+	| EMPTY_LIST; 
 
-FINAL_LIST: START_LIST O END_LIST {}; 
+FINAL_LIST: START_LIST LIST END_LIST {}; 
 
 EXP: TEXT {}    
 	| NUM {}
@@ -47,6 +44,7 @@ EXP: TEXT {}
 
 %%
 /*
+
 */
 void yyerror(char *s) {
 	printf("INVALIDO\n");

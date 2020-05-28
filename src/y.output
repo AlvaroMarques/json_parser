@@ -1,6 +1,6 @@
 State 1 conflicts: 2 shift/reduce
-State 7 conflicts: 2 reduce/reduce
-State 16 conflicts: 1 shift/reduce
+State 17 conflicts: 1 shift/reduce
+State 24 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -15,24 +15,19 @@ Grammar
 
     5 JSON: JSON COMMA JSON
     6     | TEXT TWO_DOTS FINAL_JSON
-    7     | TEXT TWO_DOTS P
+    7     | TEXT TWO_DOTS FINAL_LIST
     8     | TEXT TWO_DOTS EXP
 
-    9 P: P FINAL_LIST
-   10  | %empty
+    9 LIST: FINAL_LIST
+   10     | EXP
+   11     | LIST COMMA LIST
+   12     | EMPTY_LIST
 
-   11 O: LIST O
-   12  | %empty
+   13 FINAL_LIST: START_LIST LIST END_LIST
 
-   13 LIST: FINAL_LIST
-   14     | EXP
-   15     | LIST COMMA
-
-   16 FINAL_LIST: START_LIST O END_LIST
-
-   17 EXP: TEXT
-   18    | NUM
-   19    | NUM_FLOAT
+   14 EXP: TEXT
+   15    | NUM
+   16    | NUM_FLOAT
 
 
 Terminals, with rules where they appear
@@ -42,34 +37,31 @@ error (256)
 START_JSON (258) 3
 STOP_JSON (259) 3
 TWO_DOTS (260) 6 7 8
-TEXT (261) 6 7 8 17
-NUM (262) 18
-NUM_FLOAT (263) 19
-COMMA (264) 5 15
-START_LIST (265) 16
-END_LIST (266) 16
+TEXT (261) 6 7 8 14
+NUM (262) 15
+NUM_FLOAT (263) 16
+COMMA (264) 5 11
+START_LIST (265) 13
+END_LIST (266) 13
+EMPTY_LIST (267) 12
 
 
 Nonterminals, with rules where they appear
 
-$accept (12)
+$accept (13)
     on left: 0
-S (13)
+S (14)
     on left: 1 2, on right: 0 1
-FINAL_JSON (14)
+FINAL_JSON (15)
     on left: 3 4, on right: 1 6
-JSON (15)
+JSON (16)
     on left: 5 6 7 8, on right: 3 5
-P (16)
-    on left: 9 10, on right: 7 9
-O (17)
-    on left: 11 12, on right: 11 16
-LIST (18)
-    on left: 13 14 15, on right: 11 15
-FINAL_LIST (19)
-    on left: 16, on right: 9 13
-EXP (20)
-    on left: 17 18 19, on right: 8 14
+LIST (17)
+    on left: 9 10 11 12, on right: 11 13
+FINAL_LIST (18)
+    on left: 13, on right: 7 9
+EXP (19)
+    on left: 14 15 16, on right: 8 10
 
 
 State 0
@@ -121,7 +113,7 @@ State 4
 State 5
 
     6 JSON: TEXT . TWO_DOTS FINAL_JSON
-    7     | TEXT . TWO_DOTS P
+    7     | TEXT . TWO_DOTS FINAL_LIST
     8     | TEXT . TWO_DOTS EXP
 
     TWO_DOTS  shift, and go to state 7
@@ -139,24 +131,20 @@ State 6
 State 7
 
     6 JSON: TEXT TWO_DOTS . FINAL_JSON
-    7     | TEXT TWO_DOTS . P
+    7     | TEXT TWO_DOTS . FINAL_LIST
     8     | TEXT TWO_DOTS . EXP
 
     START_JSON  shift, and go to state 3
     TEXT        shift, and go to state 10
     NUM         shift, and go to state 11
     NUM_FLOAT   shift, and go to state 12
+    START_LIST  shift, and go to state 13
 
-    STOP_JSON   reduce using rule 4 (FINAL_JSON)
-    STOP_JSON   [reduce using rule 10 (P)]
-    COMMA       reduce using rule 4 (FINAL_JSON)
-    COMMA       [reduce using rule 10 (P)]
-    START_LIST  reduce using rule 10 (P)
-    $default    reduce using rule 4 (FINAL_JSON)
+    $default  reduce using rule 4 (FINAL_JSON)
 
-    FINAL_JSON  go to state 13
-    P           go to state 14
-    EXP         go to state 15
+    FINAL_JSON  go to state 14
+    FINAL_LIST  go to state 15
+    EXP         go to state 16
 
 
 State 8
@@ -172,57 +160,67 @@ State 9
 
     TEXT  shift, and go to state 5
 
-    JSON  go to state 16
+    JSON  go to state 17
 
 
 State 10
 
-   17 EXP: TEXT .
+   14 EXP: TEXT .
 
-    $default  reduce using rule 17 (EXP)
+    $default  reduce using rule 14 (EXP)
 
 
 State 11
 
-   18 EXP: NUM .
+   15 EXP: NUM .
 
-    $default  reduce using rule 18 (EXP)
+    $default  reduce using rule 15 (EXP)
 
 
 State 12
 
-   19 EXP: NUM_FLOAT .
+   16 EXP: NUM_FLOAT .
 
-    $default  reduce using rule 19 (EXP)
+    $default  reduce using rule 16 (EXP)
 
 
 State 13
+
+   13 FINAL_LIST: START_LIST . LIST END_LIST
+
+    TEXT        shift, and go to state 10
+    NUM         shift, and go to state 11
+    NUM_FLOAT   shift, and go to state 12
+    START_LIST  shift, and go to state 13
+    EMPTY_LIST  shift, and go to state 18
+
+    LIST        go to state 19
+    FINAL_LIST  go to state 20
+    EXP         go to state 21
+
+
+State 14
 
     6 JSON: TEXT TWO_DOTS FINAL_JSON .
 
     $default  reduce using rule 6 (JSON)
 
 
-State 14
+State 15
 
-    7 JSON: TEXT TWO_DOTS P .
-    9 P: P . FINAL_LIST
-
-    START_LIST  shift, and go to state 17
+    7 JSON: TEXT TWO_DOTS FINAL_LIST .
 
     $default  reduce using rule 7 (JSON)
 
-    FINAL_LIST  go to state 18
 
-
-State 15
+State 16
 
     8 JSON: TEXT TWO_DOTS EXP .
 
     $default  reduce using rule 8 (JSON)
 
 
-State 16
+State 17
 
     5 JSON: JSON . COMMA JSON
     5     | JSON COMMA JSON .
@@ -233,86 +231,64 @@ State 16
     $default  reduce using rule 5 (JSON)
 
 
-State 17
-
-   16 FINAL_LIST: START_LIST . O END_LIST
-
-    TEXT        shift, and go to state 10
-    NUM         shift, and go to state 11
-    NUM_FLOAT   shift, and go to state 12
-    START_LIST  shift, and go to state 17
-
-    $default  reduce using rule 12 (O)
-
-    O           go to state 19
-    LIST        go to state 20
-    FINAL_LIST  go to state 21
-    EXP         go to state 22
-
-
 State 18
 
-    9 P: P FINAL_LIST .
+   12 LIST: EMPTY_LIST .
 
-    $default  reduce using rule 9 (P)
+    $default  reduce using rule 12 (LIST)
 
 
 State 19
 
-   16 FINAL_LIST: START_LIST O . END_LIST
+   11 LIST: LIST . COMMA LIST
+   13 FINAL_LIST: START_LIST LIST . END_LIST
 
+    COMMA     shift, and go to state 22
     END_LIST  shift, and go to state 23
 
 
 State 20
 
-   11 O: LIST . O
-   15 LIST: LIST . COMMA
+    9 LIST: FINAL_LIST .
 
-    TEXT        shift, and go to state 10
-    NUM         shift, and go to state 11
-    NUM_FLOAT   shift, and go to state 12
-    COMMA       shift, and go to state 24
-    START_LIST  shift, and go to state 17
-
-    $default  reduce using rule 12 (O)
-
-    O           go to state 25
-    LIST        go to state 20
-    FINAL_LIST  go to state 21
-    EXP         go to state 22
+    $default  reduce using rule 9 (LIST)
 
 
 State 21
 
-   13 LIST: FINAL_LIST .
+   10 LIST: EXP .
 
-    $default  reduce using rule 13 (LIST)
+    $default  reduce using rule 10 (LIST)
 
 
 State 22
 
-   14 LIST: EXP .
+   11 LIST: LIST COMMA . LIST
 
-    $default  reduce using rule 14 (LIST)
+    TEXT        shift, and go to state 10
+    NUM         shift, and go to state 11
+    NUM_FLOAT   shift, and go to state 12
+    START_LIST  shift, and go to state 13
+    EMPTY_LIST  shift, and go to state 18
+
+    LIST        go to state 24
+    FINAL_LIST  go to state 20
+    EXP         go to state 21
 
 
 State 23
 
-   16 FINAL_LIST: START_LIST O END_LIST .
+   13 FINAL_LIST: START_LIST LIST END_LIST .
 
-    $default  reduce using rule 16 (FINAL_LIST)
+    $default  reduce using rule 13 (FINAL_LIST)
 
 
 State 24
 
-   15 LIST: LIST COMMA .
+   11 LIST: LIST . COMMA LIST
+   11     | LIST COMMA LIST .
 
-    $default  reduce using rule 15 (LIST)
+    COMMA  shift, and go to state 22
 
-
-State 25
-
-   11 O: LIST O .
-
-    $default  reduce using rule 11 (O)
+    COMMA     [reduce using rule 11 (LIST)]
+    $default  reduce using rule 11 (LIST)

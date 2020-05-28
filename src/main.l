@@ -30,6 +30,10 @@ void yyerror(char *);
 	return START_LIST;
 }
 
+[\[][\]] {
+	return EMPTY_LIST;
+}
+
 [\]] {
 	return END_LIST;
 }
