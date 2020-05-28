@@ -25,23 +25,21 @@ FINAL_JSON: START_JSON JSON STOP_JSON {}
 
 JSON: JSON COMMA JSON {}
 	| TEXT TWO_DOTS FINAL_JSON {}
-	| TEXT TWO_DOTS P {}
+	| TEXT TWO_DOTS FINAL_LIST {}
 	| TEXT TWO_DOTS EXP {};
 
-P: P FINAL_LIST {}
-	|;
 
 O: LIST O
 	|;
 
-LIST: FINAL_LIST {} 
-	| EXP {} 
+LIST: FINAL_LIST {printf("lista de lista\n");} 
+	| EXP {printf("exp in list\n");} 
 	| LIST COMMA {};
 
 FINAL_LIST: START_LIST O END_LIST {}; 
 
-EXP: TEXT {}    
-	| NUM {}
+EXP: TEXT {printf("text in list\n");}    
+	| NUM {printf("num in list\n");}
 	| NUM_FLOAT {};
 
 
